@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -74,33 +75,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.layoutX3:
-                Toast.makeText(this, "布局3x3", Toast.LENGTH_SHORT).show();
-                MyFrameLayout layout3=new MyFrameLayout(this,3);
-                mFrameLayout.removeView(lastView);
-                mFrameLayout.addView(layout3,layoutParams);
-                lastView=layout3;
+                //撤销
+                mMyFragment.cancel();
                 break;
             case R.id.layoutX4:
                 Toast.makeText(this, "布局4x4", Toast.LENGTH_SHORT).show();
-                MyFrameLayout layout4=new MyFrameLayout(this,4);
+                mMyFragment=new MyFrameLayout(this,4);
                 mFrameLayout.removeView(lastView);
-                mFrameLayout.addView(layout4,layoutParams);
-                lastView=layout4;
+                mFrameLayout.addView(mMyFragment,layoutParams);
+                lastView=mMyFragment;
                 break;
             case R.id.layoutX5:
                 Toast.makeText(this, "布局5x5", Toast.LENGTH_SHORT).show();
-                MyFrameLayout layout5=new MyFrameLayout(this,5);
+                mMyFragment=new MyFrameLayout(this,5);
                 mFrameLayout.removeView(lastView);
-                mFrameLayout.addView(layout5,layoutParams);
-                lastView=layout5;
+                mFrameLayout.addView(mMyFragment,layoutParams);
+                lastView=mMyFragment;
                 break;
             case R.id.layoutX6:
                 Toast.makeText(this, "布局6x6", Toast.LENGTH_SHORT).show();
-                MyFrameLayout layout6=new MyFrameLayout(this,6);
+                mMyFragment=new MyFrameLayout(this,6);
                 mFrameLayout.removeView(lastView);
-                mFrameLayout.addView(layout6,layoutParams);
-                lastView=layout6;
+                mFrameLayout.addView(mMyFragment,layoutParams);
+                lastView=mMyFragment;
                 break;
         }
+    }
+    private float downX;
+    private float downY;
+    private float distanceX;
+    private float distanceY;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float x=event.getX();
+        float y=event.getY();
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                //按下
+                downX=x;
+                downY=y;
+                break;
+            case MotionEvent.ACTION_UP:
+                //抬起
+                distanceX=x;
+                distanceY=y;
+                Log.d(TAG, "onTouchEvent:X "+distanceX+"   "+downX);
+                Log.d(TAG, "onTouchEvent:Y "+distanceY+"   "+downY);
+                if(distanceX-downX>80){
+                    //向右划
+                    mMyFragment.getMovedType(1);
+                }else if(downX-distanceX>50){
+                    //向左划
+                    mMyFragment.getMovedType(2);
+                }else if(downY-distanceY>20){
+                    //向上划
+                    mMyFragment.getMovedType(3);
+                }else if(distanceY-downY>50){
+                    //向下滑
+                    mMyFragment.getMovedType(4);
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 }

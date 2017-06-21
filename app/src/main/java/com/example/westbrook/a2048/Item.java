@@ -16,7 +16,7 @@ import android.view.View;
  */
 
 public class Item extends View {
-    private static final String TAG = "MyFrameLayout";
+    private static final String TAG = "Item";
     //数字
     private int number;
     //显示的字体
@@ -37,6 +37,7 @@ public class Item extends View {
         textNumber=number+"";
         bound=new Rect();
         mPaint.getTextBounds(textNumber,0,textNumber.length(),bound);
+        invalidate();
     }
     public Item(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs,0);
